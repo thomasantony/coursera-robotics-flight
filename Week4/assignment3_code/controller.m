@@ -17,11 +17,16 @@ function [F, M] = controller(~, state, des_state, params)
 
 
 % =================== Your code goes here ===================
-Kp = [10; 10; 800];
-Kd = [10; 10; 25];
+Kp = [10; 10; 80];
+Kd = [10; 10; 40];
+Kp_rot = [150; 150; 150];
+Kd_rot = [1; 1; 1];
 
-Kp_rot = 5*[300; 300; 300];
-Kd_rot = [2; 2; 2];
+% Kp = [180; 180; 900];
+% Kd = [35; 35; 20];
+% 
+% Kp_rot = [100; 100; 100];
+% Kd_rot = [1.8; 1.8; 1.8];
 
 g = params.gravity;
 m = params.mass;
@@ -56,8 +61,8 @@ theta_des = (rdotdot_c(1)*cos(psi_des) + rdotdot_c(2)*sin(psi_des))/g;
 rot_des = [phi_des; theta_des; psi_des];
 omega_des = [0; 0; des_state.yawdot];
 
-M = Kp_rot.*(rot_des-state.rot) + ...
-    Kd_rot.*(omega_des-state.omega);
+M = Kp_rot.*(rot_des - state.rot) + ...
+    Kd_rot.*(omega_des - state.omega);
 % if abs(state.rot(2)) > pi/3
 %     keyboard
 % end
