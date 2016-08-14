@@ -30,7 +30,6 @@ function [ desired_state ] = traj_generator(t, state, waypoints)
 % should write your own trajectory generator for the submission.
 
 persistent waypoints0 traj_time d0 pos_coeffs vel_coeffs acc_coeffs
-global A1 b1
 % if nargin > 2
 %     d = waypoints(:,2:end) - waypoints(:,1:end-1);
 %     d0 = 2 * sqrt(d(1,:).^2 + d(2,:).^2 + d(3,:).^2);
@@ -127,8 +126,7 @@ if nargin > 2
     end
     % Compute polynomial coefficients
     all_coeffs = A\b;
-    A1 = A;
-    b1 = b;
+    
     pos_coeffs = cell(n,1);
     vel_coeffs = cell(n,1);
     acc_coeffs = cell(n,1);
