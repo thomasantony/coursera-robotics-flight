@@ -17,8 +17,8 @@ function [F, M] = controller(~, state, des_state, params)
 
 
 % =================== Your code goes here ===================
-Kp = [10; 10; 80];
-Kd = [10; 10; 40];
+Kp = [80; 80; 80];
+Kd = [80; 80; 80];
 Kp_rot = [150; 150; 150];
 Kd_rot = [1; 1; 1];
 
@@ -52,7 +52,8 @@ rdotdot_c = des_state.acc + ...
 % end
 % Thrust (only for z)
 F = m*(g + rdotdot_c(3));
-
+F = min(F, params.maxF);
+F = max(F, 0);
 % Moment
 psi_des = des_state.yaw;
 phi_des = (rdotdot_c(1)*sin(psi_des) - rdotdot_c(2)*cos(psi_des))/g;

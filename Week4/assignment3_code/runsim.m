@@ -2,10 +2,10 @@ close all;
 clear;
 
 addpath('utils');
-
+global Ax Ay Az bx by bz A1 b1
 %% pre-calculated trajectories
 % trajhandle = @traj_line;
-trajhandle = @traj_helix;
+% trajhandle = @traj_helix;
 
 %% Trajectory generation with waypoints
 %% You need to implement this
@@ -17,6 +17,7 @@ waypoints = [0    0   0;
              4    0   0
              ]';
 trajhandle([],[],waypoints);
+% traj_generator_2([],[],waypoints);
 
 pos = zeros(101, 3);
 vel = zeros(101, 3);
@@ -28,12 +29,12 @@ for t = tspan
     vel(i,:) = des.vel;
     i = i + 1;
 end
-% plot3(pos(:,1),pos(:,2),pos(:,3));
-% hold on;
-% grid on;
-% for i = 1:size(waypoints,2)
-%     plot3(waypoints(1,i), waypoints(2,i), waypoints(3,i), 'rx')
-% end
+plot3(pos(:,1),pos(:,2),pos(:,3));
+hold on;
+grid on;
+for i = 1:size(waypoints,2)
+    plot3(waypoints(1,i), waypoints(2,i), waypoints(3,i), 'rx')
+end
 % return;
 
 %% controller

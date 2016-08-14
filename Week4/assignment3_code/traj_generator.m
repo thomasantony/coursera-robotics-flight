@@ -30,6 +30,7 @@ function [ desired_state ] = traj_generator(t, state, waypoints)
 % should write your own trajectory generator for the submission.
 
 persistent waypoints0 traj_time d0 pos_coeffs vel_coeffs acc_coeffs
+global A1 b1
 % if nargin > 2
 %     d = waypoints(:,2:end) - waypoints(:,1:end-1);
 %     d0 = 2 * sqrt(d(1,:).^2 + d(2,:).^2 + d(3,:).^2);
@@ -106,13 +107,13 @@ if nargin > 2
     end
     
     % pdot(S0) = pdot(Sn) = 0 -- boundary conditions
-    A(rowctr,7) = 1; rowctr = rowctr + 1;
+    A(rowctr,7) = coeffs_1(7); rowctr = rowctr + 1;
     A(rowctr,8*(n-1)+1:8*n) = [coeffs_1 0]; rowctr = rowctr + 1;
     % Acceleration = 0 at initial and terminal
-    A(rowctr,6) = 1; rowctr = rowctr + 1;
+    A(rowctr,6) = coeffs_1(6); rowctr = rowctr + 1;
     A(rowctr,8*(n-1)+1:8*n) = [coeffs_2 0 0]; rowctr = rowctr + 1;
     % Jerk = 0  at initial and terminal
-    A(rowctr,5) = 1; rowctr = rowctr + 1;
+    A(rowctr,5) = coeffs_1(5); rowctr = rowctr + 1;
     A(rowctr,8*(n-1)+1:8*n) = [coeffs_3 0 0 0]; rowctr = rowctr + 1;
     
     % Continuity of 1st-6th derivative
@@ -120,13 +121,14 @@ if nargin > 2
     for i = 0:n-2
         for k = 1:6
             A(rowctr,i*8+1:i*8+8) = [dp_coeffs{k} zeros(1,k)];
-            A(rowctr,i*8+8 + (8-k)) = -1;
+            A(rowctr,i*8+8 + (8-k)) = -dp_coeffs{k}(8-k);
             rowctr = rowctr + 1;
         end
     end
     % Compute polynomial coefficients
     all_coeffs = A\b;
-    
+    A1 = A;
+    b1 = b;
     pos_coeffs = cell(n,1);
     vel_coeffs = cell(n,1);
     acc_coeffs = cell(n,1);
@@ -201,40 +203,4 @@ else
 end
 
 end
-function [T] = polyT(n, k, t)
-% One utility function we are going to build to help us with the above is 
-% creating the polynom coefficient-coefficient vector (for lack of better 
-% name, these are the actual values you would put into the matrix raws). 
-% To understand what this mean here is an example: Lets say I want to get a
-% vector of 8 variables (for a 7th order polynom) for the first derivative 
-% when t=1. This utility function should return a vector of: 0 1 2 3 4 5 6 7.
-% When we build matrix A we will use this utility function to create those 
-% vector for us. n is the polynom number of coefficients, k is the requested 
-% derivative and t is the actual value of t (this can be anything, not just 0 or 1).
-T = zeros(n,1);
-D = zeros(n,1);
 
-% Init:
-for i=1:n
-    D(i) = i-1;
-    T(i) = 1;
-end
-
-% Derivative:
-for j=1:k
-    for i=1:n
-        T(i) = T(i) * D(i);
-        if D(i) > 0
-            D(i) = D(i) - 1;
-        end
-    end
-end
-
-% put t value
-for i=1:n
-    T(i) = T(i) * t^D(i);
-end
-
-T = T';
-
-end
