@@ -8,14 +8,14 @@ trajhandle = @traj_helix;
 
 %% Trajectory generation with waypoints
 %% You need to implement this
-waypoints = [0    0   0;
-             1    1   1;
-             2    0   2;
-             3    -1  1;
-             4    0   0
-             ]';
-trajhandle = @traj_generator;
-trajhandle([],[],waypoints);
+% waypoints = [0    0   0;
+%              1    1   1;
+%              2    0   2;
+%              3    -1  1;
+%              4    0   0
+%              ]';
+% trajhandle = @traj_generator;
+% trajhandle([],[],waypoints);
 
 % 
 % pos = zeros(101, 3);
